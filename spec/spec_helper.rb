@@ -1,1 +1,1 @@
-require_relative '../morse_utility'
+require_relative '../lib/morse_utility'
