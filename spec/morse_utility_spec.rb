@@ -25,9 +25,9 @@ module Morse
       end
     end
 
-    describe '#SOS' do
+    describe '#sos' do
       it 'equals "...   ---   ..."' do
-        expect(Converter.SOS).to eql('...   ---   ...')
+        expect(Converter.sos).to eql('...   ---   ...')
       end
     end
 

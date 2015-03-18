@@ -12,7 +12,6 @@ module Morse
     def self.beep freq, duration
       BEEP.call(freq, duration)
     end
-
     :private
 
     # Communicates to_morse code
@@ -35,7 +34,6 @@ module Morse
         end
         sleep 0.7
       end
-
     end
   end
 
