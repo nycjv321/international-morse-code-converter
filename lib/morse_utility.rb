@@ -38,59 +38,41 @@ module Morse
     # @param morse_code [String] the to_morse code to_string
     # @return [String] a String that represents the to_morse code
     def self.to_string(morse_code)
-      value = ''
       words = morse_code.split(LONG_GAP)
-      words.each do |word|
-        value << morse_word_to_string(word.split(SHORT_GAP)) << ' '
-      end
-      value.strip
+      words.map { |word| morse_word_to_string(word.split(SHORT_GAP)) }.join.strip
     end
-
-    # Converts a morse encoded word to its alphanumeric equivalent
-    # @param word [String] morse code encoded word
-    # @return [String] a String that represents alphanumeric form of the morse encoded word
-    def self.morse_word_to_string(word)
-      value = ''
-      word.each do |letter|
-        alphabet_key = ALPHABET.key(letter)
-        next if alphabet_key.nil?
-        value << alphabet_key.to_s
-      end
-      value
-    end
-
-    :private
-
-    # Converts a alphanumeric word to International Morse Code
-    # @param word [String] a String to convert to morse code
-    # @return [String] the morse code equivalent of the provided word
-    def self.alphabetic_word_to_morse(word)
-      morse = ''
-      word.split('').each do |letter|
-        if letter.is_numeric?
-          morse = morse + ALPHABET[letter.to_i]
-        else
-          value = ALPHABET[letter.upcase.to_sym]
-          next if value.nil?
-          morse = morse + value
-        end
-        morse << SHORT_GAP
-      end
-      morse
-    end
-
-    :private
 
     # Converts a string to International Morse Code
     # @param string [String] a String to convert to morse code
     # @return [String] the morse code representation of the provided string
     def self.to_morse(string)
-      morse = ''
-      words = string.to_s.split ' '
-      words.each do |word|
-        morse << alphabetic_word_to_morse(word).strip! << LONG_GAP
-      end
-      morse.strip
+      words = string.to_s.split
+      words.map { |word| alphabetic_word_to_morse(word) }.join.strip
+    end
+
+    :private
+
+    # Converts a morse encoded word to its alphanumeric equivalent
+    # @param word [String] morse code encoded word
+    # @return [String] a String that represents alphanumeric form of the morse encoded word
+    def self.morse_word_to_string(word)
+      valid_word = word.reject { |letter| ALPHABET.key(letter).nil? }
+      valid_word.map { |letter| ALPHABET.key(letter) }.join + ' '
+    end
+
+    # Converts a alphanumeric word to International Morse Code
+    # @param word [String] a String to convert to morse code
+    # @return [String] the morse code equivalent of the provided word
+    def self.alphabetic_word_to_morse(word)
+      word.chars.map { |letter| alphabet_lookup(letter) }.join.strip + LONG_GAP
+    end
+
+    # Given a letter or number, will return the morse code value of the key in the ALPHABET hash
+    # @param letter [String] a character to convert to morse code
+    # @return [String] the morse code for the letter or an empty string if not a alpha numeric character
+    def self.alphabet_lookup(letter)
+      morse = letter.is_numeric? ? ALPHABET[letter.to_i] : ALPHABET[letter.upcase.to_sym]
+      morse.nil? ? '' : morse + SHORT_GAP
     end
   end
 
